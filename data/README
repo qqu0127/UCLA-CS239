@@ -1,0 +1,50 @@
+UniMiB SHAR: a new dataset for human
+activity recognition using acceleration data
+from smartphones
+
+D. Micucci and M. Mobilio and P. Napoletano
+-------------------------------------------------------------------------------
+ABSTRACT: 
+Smartphones, smartwatches, fitness trackers, and ad-hoc wearable
+devices are being increasingly used to monitor human activities. Usually,
+machine-learning-based algorithms process data acquired by their
+sensors to classify human activities. The success of those algorithms
+mostly depends on the availability of training (labeled) data. In this
+letter we present a new smartphone accelerometer dataset designed for
+activity recognition. The dataset includes 7,013 activities performed
+by 30 subjects, mostly females, of ages ranging from 18 to 60 years.
+Activities are divided in 17 fine grained classes grouped in two coarse
+grained classes: 9 types of activities of daily living (ADL) and 8 types
+of falls. The dataset, benchmarked with two different classifiers, thanks
+to its unique features will be of interest to the scientific community.
+
+-------------------------------------------------------------------------------
+DATA:
+
+The dataset is composed of 4 data splits:
+
+1. 15942x51 ADL data. Each set of three subsequent rows contains x,y,z accelerometer data (adl_data.mat).
+2. 5097x51 FALL data. Each set of three subsequent rows contains x,y,z accelerometer data (fall_data.mat).
+3. 21039x51 ADL and FALL data. Each set of three subsequent rows contains x,y,z accelerometer data (acc_data.mat).
+4. 21039x51 ADL and FALL data. Each set of three subsequent rows contains x,y,z accelerometer data (two_classes_data.mat).
+
+For each data split the corresponding labeling is contained in "x_labels.mat". First column contains the class labels (in terms of integer number), while the second column contains the human subject labels, which subject performed which action.
+For each data split the corresponding action names are contained in "x_names.mat". The first column contains the action name, while the second column contains the corresponding integer number.
+
+-------------------------------------------------------------------------------
+CODE
+
+The code is written in Matlab and tested on a Ubuntu 14.04 machine with Matlab 2014b.
+To repeat the experiments: open the matlab script "evall.m", change the variables "datapath", "splitpath" and "resultpath" in agreement with your local path. To repeat the same numbers of the paper, check if the original training/test splits are in the folder "./data/split/".
+
+The results will be written in the folder "./data/results/"
+-------------------------------------------------------------------------------
+ACKNOWLEDGE:
+If you use the dataset or the code, please cite this paper:
+
+@article{micuccciUNIMIB_SHAR2016,
+  title={UniMiB SHAR: a new dataset for human activity recognition using acceleration data from smartphones}, 
+  author={Micucci, Daniela and Mobilio, Marco and Napoletano, Paolo},
+  journal={arXiv preprint arXiv:1602.00970},
+  year={2016}
+}
