@@ -1,0 +1,7 @@
+Performance of DecisionTreeClassifier
+('accuracy = ', 0.87208576706486518)
+('f1_score = ', 0.7454991622186381)
+('auroc = ', 0.83690580084188204)
+('precision = ', 0.72740875463884613)
+('sensitivity = ', 0.9051511817635836)
+('specificity = ', 0.7274087546388461)

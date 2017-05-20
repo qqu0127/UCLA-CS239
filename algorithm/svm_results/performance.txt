@@ -1,0 +1,15 @@
+Performance for Linear DecisionTree
+('accuracy', '=', 0.90987701992721826)
+('f1_score', '=', 0.80886504200847009)
+('auroc', '=', 0.86666000179507008)
+('precision', '=', 0.84282511595490317)
+('sensitivity', '=', 0.9505037620492761)
+('specificity', '=', 0.8428251159549032)
+
+Performance for RBF DecisionTree
+('accuracy', '=', 0.91315591195170143)
+('f1_score', '=', 0.81541394762102259)
+('auroc', '=', 0.87082422075103805)
+('precision', '=', 0.84991945840747662)
+('sensitivity', '=', 0.9529498470200354)
+('specificity', '=', 0.8499194584074766)
