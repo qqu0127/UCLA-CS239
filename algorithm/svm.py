@@ -1,12 +1,3 @@
-# Author: Qi Qu
-
-# Matlab - Python interface
-# Wrap the data into ndarray to allow access from Python
-
-# dataInput():
-#INPUT: one of the dataNames
-#OUTPUT: Python ndarray
-
 import scipy.io as sio
 import numpy as np
 from sklearn.svm import SVC
