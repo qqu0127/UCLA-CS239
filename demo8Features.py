@@ -200,7 +200,7 @@ def main():
 
     skf = StratifiedKFold(y, n_folds=5)
     clf_linear = SVC(kernel="linear", C=0.001)
-    print ("Performance for Linear DecisionTree")
+    print ("Performance for SVC")
     for metric in metric_list:
         ave_performance = cv_performance(clf_linear, X, y, skf, metric=metric)
         print(metric, "=", ave_performance)
