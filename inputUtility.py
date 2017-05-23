@@ -10,7 +10,8 @@
 import scipy.io as sio
 
 dataNames = ['acc_data', 'adl_data', 'fall_data', 'two_classes_data']
-labelNames = ['acc_label', 'adl_labels', 'fall_labels', 'two_classes_labels']
+labelNames = ['acc_labels', 'adl_labels', 'fall_labels', 'two_classes_labels']
+nameFile = ['acc_names', 'adl_names', 'fall_names', 'two_classes_names']
 
 
 def dataInput(filename):
@@ -26,4 +27,11 @@ def dataInputAll():
 	d3 = dataInput(dataNames[2])
 	d4 = dataInput(dataNames[3])
 	return d1, d2, d3, d4
+
+def main() :
+	d = dataInput(labelNames[0])
+	r,c = d.shape
+	print d
 	
+if __name__ == "__main__" :
+    main()
