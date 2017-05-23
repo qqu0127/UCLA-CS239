@@ -5,7 +5,9 @@ from sklearn.cross_validation import StratifiedKFold
 from sklearn import metrics
 import csv
 
-from util import *
+dataFile = ['acc_data', 'adl_data', 'fall_data', 'two_classes_data']
+labelFile = ['acc_labels', 'adl_labels', 'fall_labels', 'two_classes_labels']
+nameFile = ['acc_names', 'adl_names', 'fall_names', 'two_classes_names']
 
 def performance(y_true, y_pred, metric="accuracy"):
     """
@@ -101,7 +103,7 @@ def select_param_linear(X, y, kf, metric="accuracy"):
         C -- float, optimal parameter value for linear-kernel SVM
     """
     
-    print 'Linear SVM Hyperparameter Selection based on ' + str(metric) + ':'
+    print ('Linear SVM Hyperparameter Selection based on ' + str(metric) + ':')
     C_range = 10.0 ** np.arange(-3, 3)
     
     for c in C_range:
@@ -111,9 +113,8 @@ def select_param_linear(X, y, kf, metric="accuracy"):
             p_max = performance
             c_return = c
         performance_list.append(performance)
-    print performance_list
+    print (performance_list)
     return c_return
-
 def select_param_rbf(X, y, kf, metric="accuracy"):
     """
     Sweeps different settings for the hyperparameters of an RBF-kernel SVM,
@@ -134,7 +135,7 @@ def select_param_rbf(X, y, kf, metric="accuracy"):
         gamma, C -- tuple of floats, optimal parameter values for an RBF-kernel SVM
     """
     
-    print 'RBF SVM Hyperparameter Selection based on ' + str(metric) + ':'
+    print ('RBF SVM Hyperparameter Selection based on ' + str(metric) + ':')
     C_range = 10.0 ** np.arange(-3, 3)
     gamma_range = 10.0 ** np.arange(-4, 2)
 
@@ -167,11 +168,18 @@ def select_param_rbf(X, y, kf, metric="accuracy"):
     out.close()
 
     return c_return, g_return
-
+	
+	
 def main():
-    data = load_data()
-    X = data.X
-    y = data.y
+    
+    temp_data = sio.loadmat('./demoFeaturesOutput/feat.mat')
+    X = temp_data['feat']
+    temp_label = sio.loadmat('./demoFeaturesOutput/labels.mat')
+    y = temp_label['labels'][0]
+    #data = load_data()
+    #X = data.X
+    #y = data.y
+    
     
     metric_list = ["accuracy", "f1_score", "auroc", "precision", "sensitivity", "specificity"]
     
@@ -192,17 +200,9 @@ def main():
 
     skf = StratifiedKFold(y, n_folds=5)
     clf_linear = SVC(kernel="linear", C=0.001)
-    print "Performance for Linear DecisionTree"
+    print ("Performance for SVC")
     for metric in metric_list:
         ave_performance = cv_performance(clf_linear, X, y, skf, metric=metric)
         print(metric, "=", ave_performance)
-
-    print "Performance for RBF DecisionTree"
-    clf_rbf = SVC(kernel="rbf", C=0.1, gamma=0.1)
-    for metric in metric_list:
-        ave_performance = cv_performance(clf_rbf, X, y, skf, metric=metric)
-        print(metric, "=", ave_performance)
-
-
 if __name__ == "__main__" :
     main()
