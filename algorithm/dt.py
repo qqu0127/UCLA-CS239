@@ -9,51 +9,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.cross_validation import StratifiedKFold
 from sklearn import metrics
 
-def plot_histogram(X, y, Xname, yname, show = True) :
-    """
-    Plots histogram of values in X grouped by y.
-    
-    Parameters
-    --------------------
-        X     -- numpy array of shape (n,d), feature values
-        y     -- numpy array of shape (n,), target classes
-        Xname -- string, name of feature
-        yname -- string, name of target
-    """
-    
-    # set up data for plotting
-    targets = sorted(set(y))
-    data = []; labels = []
-    for target in targets :
-        features = [X[i] for i in xrange(len(y)) if y[i] == target]
-        data.append(features)
-        if (target == -1):
-            labels.append('adl')
-        else:
-            labels.append('fall')
-    
-    # set up histogram bins
-    features = set(X)
-    nfeatures = len(features)
-    test_range = range(int(math.floor(min(features))), int(math.ceil(max(features)))+1)
-    if nfeatures < 10 and sorted(features) == test_range:
-        bins = test_range + [test_range[-1] + 1] # add last bin
-        align = 'left'
-    else :
-        bins = 10
-        align = 'mid'
-    
-    # plot
-    if show == True:
-        plt.figure()
-        n, bins, patches = plt.hist(data, bins=bins, align=align, alpha=0.5, label=labels)
-        plt.xlabel(Xname)
-        plt.ylabel('Frequency')
-        plt.legend() #plt.legend(loc='upper left')
-        plt.show()
-
-    return data, bins, align, labels
-
 def cv_performance(clf, X, y) :
     """
     Computes the classifier error over a random split of the data,
@@ -75,7 +30,7 @@ def cv_performance(clf, X, y) :
     ### ========== TODO : START ========== ###
     # compute cross-validation error over ntrials
     # hint: use train_test_split (be careful of the parameters)
-    print 'Performance of DecisionTreeClassifier'
+    print 'cv Performance of DecisionTreeClassifier'
     skf = StratifiedKFold(y, n_folds=5)
     # performance
     accuracy = 0.0
@@ -119,6 +74,28 @@ def cv_performance(clf, X, y) :
     precision = precision / ntrials
     sensitivity = sensitivity / ntrials
     specificity = specificity / ntrials
+
+    print("accuracy = ", accuracy)
+    print("f1_score = ", f1_score)
+    print("auroc = ", auroc)
+    print("precision = ", precision)
+    print("sensitivity = ", sensitivity)
+    print("specificity = ", specificity)
+
+def performance(clf, X_train, y_train, X_test, y_test):
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    m = metrics.confusion_matrix(y_test, y_pred)
+    TP = m[0, 0]
+    FN = m[0, 1]
+    TN = m[1, 1]
+    FP = m[0, 1]
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+    f1_score = metrics.f1_score(y_test, y_pred)
+    auroc = metrics.roc_auc_score(y_test, y_pred)
+    precision = metrics.precision_score(y_test, y_pred)
+    sensitivity = float(TP) / float(TP + FN)
+    specificity = float(TN) / float(FP + TN)
 
     print("accuracy = ", accuracy)
     print("f1_score = ", f1_score)
@@ -187,19 +164,18 @@ def write_predictions(y_pred, filename, yname=None) :
 ######################################################################
 
 def main():
-    # load Titanic dataset
+    '''
     data = load_data()
     X = data.X; Xnames = data.Xnames
     y = data.y; yname = data.yname
     n,d = X.shape  # n = number of examples, d =  number of features
-    
-    #plot histograms of each feature
     '''
-    print 'Plotting...'
-    for i in xrange(d) :
-        plot_histogram(X[:,i], y, Xname=Xnames[i], yname=yname)
-    '''
-    
+    temp_data = sio.loadmat('../demoFeaturesOutput/feat.mat')
+    X = temp_data['feat']
+    temp_label = sio.loadmat('../demoFeaturesOutput/labels.mat')
+    y = temp_label['labels'][0]
+    n,d = X.shape  # n = number of examples, d =  number of features
+    Xnames = ['std_x', 'std_y', 'std_z', 'max_magnitude', 'feature-5', 'feature-6', 'feature-7', 'feature-8']
     
     '''
     # evaluate training error of Decision Tree classifier
@@ -220,11 +196,19 @@ def main():
                          feature_names=Xnames)
     graph = pydot.graph_from_dot_data(dot_data.getvalue())
     graph[0].write_pdf("dt_results/dtree.pdf") 
-    '''
 
+    '''
     # use cross-validation to compute average training and test error of classifiers
+    # split the train and test data
+    from sklearn.model_selection import StratifiedShuffleSplit
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
+    for train_index, test_index in sss.split(X, y):
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+
     clf = DecisionTreeClassifier(criterion = "entropy")
-    cv_performance(clf, X, y)
+    print 'cv Performance for Decision Tree'
+    cv_performance(clf, X_train, y_train)
     #d_train_error, d_test_error = error(clf, X, y)
     #print ('\t-- DecisionTreeClassifier: train_error: %.3f test_error: %.3f' % (d_train_error, d_test_error))
 
@@ -233,7 +217,7 @@ def main():
     d_test_errors = []
     for i in range(1, 21):
         clf = DecisionTreeClassifier(criterion = "entropy", max_depth = i)
-        d_train_error, d_test_error = error(clf, X, y)
+        d_train_error, d_test_error = error(clf, X_train, y_train)
         d_train_errors.append(d_train_error)
         d_test_errors.append(d_test_error)
     min = d_test_errors[0]
@@ -253,6 +237,10 @@ def main():
     plt.xlabel('depth limit')
     plt.ylabel('average error')
     plt.show()
+
+    print 'test Performance for Decision Tree'
+    clf = DecisionTreeClassifier(criterion = "entropy")
+    performance(clf, X_train, y_train, X_test, y_test)
 
 
 

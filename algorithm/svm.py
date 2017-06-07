@@ -169,9 +169,16 @@ def select_param_rbf(X, y, kf, metric="accuracy"):
     return c_return, g_return
 
 def main():
+    '''
     data = load_data()
     X = data.X
     y = data.y
+    '''
+    temp_data = sio.loadmat('../demoFeaturesOutput/feat.mat')
+    X = temp_data['feat']
+    temp_label = sio.loadmat('../demoFeaturesOutput/labels.mat')
+    y = temp_label['labels'][0]
+    n,d = X.shape  # n = number of examples, d =  number of features
     
     metric_list = ["accuracy", "f1_score", "auroc", "precision", "sensitivity", "specificity"]
     
@@ -190,19 +197,43 @@ def main():
     #    print("param_rbf based on ", metric, "=", param_rbf)
 
 
-    skf = StratifiedKFold(y, n_folds=5)
+    # split the train and test data
+    from sklearn.model_selection import StratifiedShuffleSplit
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
+    for train_index, test_index in sss.split(X, y):
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+
+    skf = StratifiedKFold(y_train, n_folds=5)
     clf_linear = SVC(kernel="linear", C=0.001)
-    print "Performance for Linear DecisionTree"
+    print '---------------------------------------'
+    print "cv Performance for Linear svm"
     for metric in metric_list:
-        ave_performance = cv_performance(clf_linear, X, y, skf, metric=metric)
+        ave_performance = cv_performance(clf_linear, X_train, y_train, skf, metric=metric)
         print(metric, "=", ave_performance)
 
-    print "Performance for RBF DecisionTree"
+    print '---------------------------------------'
+    print "test Performance for Linear svm"
+    clf_linear.fit(X_train, y_train)
+    y_pred = clf_linear.decision_function(X_test)
+    for metric in metric_list:
+        test_performance = performance(y_test, y_pred, metric=metric)
+        print(metric, "=", test_performance)
+
+    print '---------------------------------------'
+    print "cv Performance for RBF svm"
     clf_rbf = SVC(kernel="rbf", C=0.1, gamma=0.1)
     for metric in metric_list:
-        ave_performance = cv_performance(clf_rbf, X, y, skf, metric=metric)
+        ave_performance = cv_performance(clf_rbf, X_train, y_train, skf, metric=metric)
         print(metric, "=", ave_performance)
 
+    print '---------------------------------------'
+    print "test Performance for RBF svm"
+    clf_rbf.fit(X_train, y_train)
+    y_pred = clf_rbf.decision_function(X_test)
+    for metric in metric_list:
+        test_performance = performance(y_test, y_pred, metric=metric)
+        print(metric, "=", test_performance)
 
 if __name__ == "__main__" :
     main()

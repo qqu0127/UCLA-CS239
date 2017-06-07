@@ -1,0 +1,27 @@
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.92477875  0.84625392  0.90105016  0.83814396  0.94707265  0.83814396]
+
+cv Performance for bayes
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.8281652   0.70915736  0.84029717  0.60161624  0.81675399  0.60161624]
+
+cv Performance for GBDT
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.95311957  0.89872948  0.92125392  0.94186294  0.98306297  0.94186294]
+
+cv Performance for lr
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.93974947  0.87040409  0.9044228   0.90826742  0.97294643  0.90826742]
+
+cv Performance for rf
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.94100026  0.86955748  0.89773833  0.93390793  0.98165259  0.93390793]
+
+cv Performance for knn
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.93511489  0.85456482  0.88508535  0.93393238  0.98212262  0.93393238]
+
+GBDT
+test Performance for GBDT
+['accuracy', 'f1_score', 'auroc', 'precision', 'sensitivity', 'specificity']
+[ 0.95580898  0.90606061  0.92982818  0.934375    0.98024459  0.934375  ]

@@ -1,7 +1,17 @@
-Performance of DecisionTreeClassifier
-('accuracy = ', 0.87208576706486518)
-('f1_score = ', 0.7454991622186381)
-('auroc = ', 0.83690580084188204)
-('precision = ', 0.72740875463884613)
-('sensitivity = ', 0.9051511817635836)
-('specificity = ', 0.7274087546388461)
+cv Performance for Decision Tree
+cv Performance of DecisionTreeClassifier
+('accuracy = ', 0.92870047786173482)
+('f1_score = ', 0.85357377954937275)
+('auroc = ', 0.90439473957399419)
+('precision = ', 0.85043686206014057)
+('sensitivity = ', 0.9515396419437341)
+('specificity = ', 0.8504368620601406)
+Investigating depths...
+7
+test Performance for Decision Tree
+('accuracy = ', 0.93727726300784031)
+('f1_score = ', 0.87283236994219648)
+('auroc = ', 0.9205993027502628)
+('precision = ', 0.85795454545454541)
+('sensitivity = ', 0.9529633113828786)
+('specificity = ', 0.8579545454545454)

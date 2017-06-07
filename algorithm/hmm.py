@@ -6,6 +6,7 @@ import csv
 from hmmlearn.hmm import GaussianHMM
 from hmmlearn.hmm import MultinomialHMM
 from sklearn.model_selection import StratifiedShuffleSplit
+import matplotlib.pyplot as plt
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -37,19 +38,20 @@ class Data :
         distance = np.absolute(feature - b1) + np.absolute(feature - b2)
         ci = np.zeros(n)
         i = 0
-        '''
+        
         while i < 51:
             j = i
             i += m
             max_distance = -1
             arg_max = j
             while j != 51 and j < i:
-                if (distance[j] >= max_distance):
-                    max_distance = distance[j]
+                if (feature[j] >= max_distance):
+                    max_distance = feature[j]
                     arg_max = j
                 j += 1
             # aF can be symbolized by introducing a finite set of symbols: S = {1,2,3,4,5,6,7,8}
             af = feature[arg_max]
+            
             if (af >= 0 and af < 3):
                 ci[i / m - 1] = 0
             elif (af >= 3 and af < 6):
@@ -66,6 +68,30 @@ class Data :
                 ci[i / m - 1] = 6
             else:
                 ci[i / m - 1] = 7
+            '''
+            if (af >= 0 and af < 3):
+                ci[i / m - 1] = 0
+            elif (af >= 3 and af < 6):
+                ci[i / m - 1] = 1
+            elif (af >= 6 and af < 9):
+                ci[i / m - 1] = 2
+            elif (af >= 9 and af <= 11):
+                ci[i / m - 1] = 3
+            elif (af > 11 and af < 14):
+                ci[i / m - 1] = 4
+            elif (af >= 14 and af < 17):
+                ci[i / m - 1] = 5
+            elif (af >= 17 and af < 20):
+                ci[i / m - 1] = 6
+            elif (af >= 20 and af < 23):
+                ci[i / m - 1] = 7
+            elif (af >= 23 and af < 26):
+                ci[i / m - 1] = 8
+            elif (af >= 26 and af < 35):
+                ci[i / m - 1] = 9
+            else:
+                ci[i / m - 1] = 10
+            '''
         '''
         while i < 51:
             if (feature[i] >= 0 and feature[i] < 3):
@@ -76,16 +102,23 @@ class Data :
                 ci[i] = 2
             elif (feature[i] >= 9 and feature[i] <= 11):
                 ci[i] = 3
-            elif (feature[i] > 11 and feature[i] < 19):
+            elif (feature[i] > 11 and feature[i] < 14):
                 ci[i] = 4
-            elif (feature[i] >= 19 and feature[i] < 27):
+            elif (feature[i] >= 14 and feature[i] < 17):
                 ci[i] = 5
-            elif (feature[i] >= 27 and feature[i] < 35):
+            elif (feature[i] >= 17 and feature[i] < 20):
                 ci[i] = 6
-            else:
+            elif (feature[i] >= 20 and feature[i] < 23):
                 ci[i] = 7
+            elif (feature[i] >= 23 and feature[i] < 26):
+                ci[i] = 8
+            elif (feature[i] >= 26 and feature[i] < 35):
+                ci[i] = 9
+            else:
+                ci[i] = 10
             i += 1
-        # print ci
+        '''
+        #print ci
         return ci      
 
     def fileInput(self, filename):
@@ -93,12 +126,19 @@ class Data :
         temp_data = sio.loadmat(path)
         data = temp_data[filename]
         return data
+
+    def plot(self, magnitude):
+        n = len(magnitude)
+        plt.xlabel('Time')
+        plt.ylabel('average magnitude')
+        plt.plot(range(n), magnitude)
+        plt.show()
         
     def split_data(self, data, labels):
         # 51 = 4 * 12 + 3 or 51 = 5 * 9 + 6
         # m = 4, n = 13
         m = 4
-        n = 51
+        n = 13
         sample_sum = data.shape[0]
         fall_data = np.zeros((fall_size, n))
         adl_data = np.zeros((adl_size, n))
@@ -112,6 +152,9 @@ class Data :
             # a = sqrt(ax^2 + ay^2 + az^2)
             sum_vector_square = np.square(data[i]) + np.square(data[i + 1]) + np.square(data[i + 2])
             a = np.sqrt(sum_vector_square)
+            if (a[0] >= 15):
+                self.plot(a)
+                return
             ci = self.extract_ci(a, n, m)
             #print ci
             # label(1~9) is adl, label(10~17) is fall
@@ -183,7 +226,7 @@ def load_data() :
     return data
 
 def main() :
-    n = 51
+    n = 13
     data = load_data()
     training_sample_set = data.training_sample_set
     statistical_sample_set = data.statistical_sample_set
@@ -198,15 +241,22 @@ def main() :
     X = training_sample_set.reshape((n * training_sample_set_size, 1))
     model = GaussianHMM(n_components=3, covariance_type="diag", n_iter=1000).fit(X, lengths)
     # model = MultinomialHMM(n_components=3, n_iter=1000)
-    model.fit(X, lengths)
     # Predict the optimal sequence of internal hidden state
+    '''
+    statistical_sample_sum = statistical_sample_set.shape[0]
+    for i in range(training_sample_set_size):
+        obs = training_sample_set[i, :].transpose().reshape((n, 1))
+        #print obs.shape
+        logp = model.score(obs)
+        print logp
+    '''
     statistical_sample_sum = statistical_sample_set.shape[0]
     for i in range(statistical_sample_sum):
         obs = statistical_sample_set[i, :].transpose().reshape((n, 1))
         #print obs.shape
-        logp = model.score(obs)
-        print logp, statistical_label_set[i]
-
+        logp, hidden_state = model.decode(obs)
+        print logp, statistical_label_set[i], hidden_state, statistical_sample_set[i, :]
+    
     print("done")
     
 if __name__ == "__main__" :
