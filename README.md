@@ -7,8 +7,8 @@ AI and Health Informatics -- course project
 
 ## algorithms :
 * We used 7 models for training in train.py.
-* We tryied to find the best parameter setting for svm&dt model in svm.py&dt.py
-* In addition, we tryied hidden markov model in hmm.model. 
+* We tried to find the best parameter setting for svm&dt model in svm.py&dt.py
+* In addition, we tried hidden markov model in hmm.model. 
 
 ## featureExtractionDemo.m:
 *Read from raw data from folder "./data"
